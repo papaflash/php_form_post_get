@@ -12,15 +12,22 @@ if (empty($_POST['file_name']) || empty($_FILES['content'])) {
 
 function saveUpload(): void
 {
-    define('UPLOAD_DIR', '');
+    define('UPLOAD_DIR', './uploads/');
     $ext = pathinfo($_FILES['content']['name'], PATHINFO_EXTENSION);
     $name = $_POST['file_name'] . '.' . $ext;
     $source = $_FILES['content']['tmp_name'];
-    $destination = './uploads/' . $name;
+    createDir(UPLOAD_DIR);
+    $destination = UPLOAD_DIR . $name;
     if(move_uploaded_file($source, $destination)){
         echo "<p style='font-size:22px'>Файл успешно загружен: " . realpath($destination). "<br>"
             . "Размер файла: " . $_FILES['content']['size'] . " Байт" ."</p>";
     }else{
         echo "Не удалось загрузить файл";
+    }
+}
+function createDir(string $path): void
+{
+    if(!is_dir($path)){
+       $isCreated = mkdir($path, 0777);
     }
 }
